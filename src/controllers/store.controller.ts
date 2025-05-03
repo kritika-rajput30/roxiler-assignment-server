@@ -121,23 +121,27 @@ export const updateStore = async (req: Request, res: Response) => {
 // Delete store (Only by owner or admin)
 export const deleteStore = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const user = req.user;
 
   try {
-    const store = await prisma.store.findUnique({ where: { storeId: id } });
+    const store = await prisma.store.findUnique({ where: { store_id: id } });
 
     if (!store) return res.status(404).json({ error: 'Store not found' });
 
-    if (user.role !== 'admin' && user.userId !== store.userId) {
-      return res.status(403).json({ error: 'Unauthorized' });
-    }
+    // Step 1: Delete related ratings
+    await prisma.rating.deleteMany({ where: { store_id: id } });
 
-    await prisma.store.delete({ where: { storeId: id } });
-    res.json({ message: 'Store deleted successfully' });
-  } catch (error) {
+    // Step 2: Now delete the store
+    await prisma.store.delete({ where: { store_id: id } });
+
+    res.json({ message: 'Store and related ratings deleted successfully' });
+  } catch (error: any) {
+    console.error("Delete store error:", error);
+
     res.status(500).json({ error: 'Failed to delete store' });
   }
 };
+
+
 export const getStoresByOwner = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
