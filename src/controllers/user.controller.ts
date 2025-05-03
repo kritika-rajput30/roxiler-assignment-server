@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../prisma/client';
+import { hashPassword } from '../utils/hash';
 
 // GET /api/users - Admin only - List all users
 export const getAllUsers = async (req: Request, res: Response) => {
@@ -36,15 +37,14 @@ export const getAllUsers = async (req: Request, res: Response) => {
 // PUT /api/users/password - Update password (logged-in user)
 export const updatePassword = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?.id;
-    const { newPassword } = req.body;
+    const { newPassword, userId } = req.body;
 
     if (!newPassword) return res.status(400).json({ error: 'New password is required' });
-
+    const hashed = await hashPassword(newPassword);
     await prisma.user.update({
-      where: { id: userId },
+      where: { user_id: userId },
       data: {
-        password: newPassword, // 🔒 You should hash this in production
+        password: hashed, // 🔒 You should hash this in production
       },
     });
 
