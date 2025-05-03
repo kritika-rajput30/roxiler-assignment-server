@@ -2,7 +2,8 @@ import { Router } from 'express';
 import {
   getAllUsers,
   getUserById,
-  updatePassword
+  updatePassword,
+  updateUser
 } from '../controllers/user.controller';
 import { authenticate } from '../middlewares/auth.middleware';
 import { authorize } from '../middlewares/role.middleware';
@@ -17,5 +18,6 @@ router.get('/:id', authenticate, authorize(['admin']), getUserById);
 
 // Authenticated user: Update own password
 router.put('/password', authenticate, updatePassword);
+router.put("/:id",authenticate, authorize(['admin']), updateUser);
 
 export default router;
