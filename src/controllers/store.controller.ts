@@ -99,16 +99,16 @@ export const updateStore = async (req: Request, res: Response) => {
   const user = req.user; // from auth middleware
 
   try {
-    const store = await prisma.store.findUnique({ where: { storeId: id } });
+    const store = await prisma.store.findUnique({ where: { store_id: id } });
 
     if (!store) return res.status(404).json({ error: 'Store not found' });
 
-    if (user.role !== 'admin' && user.userId !== store.userId) {
+    if (user.role !== 'admin' && user.user_id !== store.user_id) {
       return res.status(403).json({ error: 'Unauthorized' });
     }
 
     const updated = await prisma.store.update({
-      where: { storeId: id },
+      where: { store_id: id },
       data: { name, address, email },
     });
 
