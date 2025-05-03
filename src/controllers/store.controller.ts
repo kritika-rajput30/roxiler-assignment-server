@@ -163,3 +163,45 @@ export const getStoresByOwner = async (req: Request, res: Response) => {
     return res.status(500).json({ error: 'Failed to retrieve stores' });
   }
 };
+
+export const getRatingsForUserStores = async (req, res) => {
+  const { user_id } = req.params;
+
+  try {
+    // 1. Find all stores created by the user
+    const stores = await prisma.store.findMany({
+      where: {
+        user_id: user_id,
+      },
+      select: {
+        store_id: true,
+        name: true,
+        ratings: {
+          select: {
+            rating_id: true,
+            rating: true,
+            comment: true,
+            createdAt: true,
+            user: {
+              select: {
+                user_id: true,
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!stores || stores.length === 0) {
+      return res.status(404).json({ message: "No stores found for this user." });
+    }
+
+    // 2. Return stores with their ratings
+    return res.status(200).json({ stores });
+  } catch (error) {
+    console.error("Error fetching ratings for user's stores:", error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
