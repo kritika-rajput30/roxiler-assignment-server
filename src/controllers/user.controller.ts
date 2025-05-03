@@ -5,7 +5,7 @@ import { hashPassword } from '../utils/hash';
 // GET /api/users - Admin only - List all users
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const { name, email, address, role } = req.query;
+    const { name, email, address, role, sortKey, sortOrder } = req.query;
 
     const users = await prisma.user.findMany({
       where: {
@@ -15,16 +15,18 @@ export const getAllUsers = async (req: Request, res: Response) => {
         role: role ? String(role) : undefined,
       },
       select: {
-        user_id: true, // changed from `id`
+        user_id: true,
         name: true,
         email: true,
         address: true,
         role: true,
         ratings: true,
       },
-      orderBy: {
-        name: 'asc',
-      },
+      orderBy: sortKey && sortOrder
+        ? {
+            [String(sortKey)]: sortOrder === 'desc' ? 'desc' : 'asc',
+          }
+        : undefined,
     });
 
     res.status(200).json(users);
