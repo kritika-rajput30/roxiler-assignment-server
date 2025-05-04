@@ -1,9 +1,7 @@
 
----
 
 ### ✅ `server/README.md`
 
-```markdown
 # ⚙️ Ratehub - Server
 
 This is the **backend** of the Ratehub application, built using **Express.js**, **Node.js**, and **PostgreSQL**, with **Prisma ORM** for DB modeling.
