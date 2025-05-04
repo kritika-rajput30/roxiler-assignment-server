@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
-import prisma from '../prisma/client';
-import { hashPassword } from '../utils/hash';
+import { Request, Response } from "express";
+import prisma from "../prisma/client";
+import { hashPassword } from "../utils/hash";
 
-// Get Dashboard Stats
 export const getDashboardStats = async (req: Request, res: Response) => {
   try {
     const totalUsers = await prisma.user.count();
@@ -11,48 +10,47 @@ export const getDashboardStats = async (req: Request, res: Response) => {
 
     res.json({ totalUsers, totalStores, totalRatings });
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching dashboard stats' });
+    res.status(500).json({ error: "Error fetching dashboard stats" });
   }
 };
 
 export const addUser = async (req: Request, res: Response) => {
-    const { name, email, password, address, role } = req.body;
-  
-    try {
-      const userExists = await prisma.user.findUnique({ where: { email } });
-  
-      if (userExists) {
-        return res.status(400).json({ error: 'User already exists' });
-      }
-  
-      const hashedPassword = await hashPassword(password);
-  
-      const newUser = await prisma.user.create({
-        data: {
-          name,
-          email,
-          address,
-          password: hashedPassword,
-          role,
-        },
-      });
-  
-      res.status(201).json({ message: 'User created', user: newUser });
-    } catch (error) {
-      res.status(500).json({ error: 'Error creating user' });
-    }
-  };
+  const { name, email, password, address, role } = req.body;
 
-// Get List of Users with Optional Filters
+  try {
+    const userExists = await prisma.user.findUnique({ where: { email } });
+
+    if (userExists) {
+      return res.status(400).json({ error: "User already exists" });
+    }
+
+    const hashedPassword = await hashPassword(password);
+
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        email,
+        address,
+        password: hashedPassword,
+        role,
+      },
+    });
+
+    res.status(201).json({ message: "User created", user: newUser });
+  } catch (error) {
+    res.status(500).json({ error: "Error creating user" });
+  }
+};
+
 export const getUsers = async (req: Request, res: Response) => {
   const { name, email, address, role } = req.query;
 
   try {
     const users = await prisma.user.findMany({
       where: {
-        name: { contains: name as string, mode: 'insensitive' },
-        email: { contains: email as string, mode: 'insensitive' },
-        address: { contains: address as string, mode: 'insensitive' },
+        name: { contains: name as string, mode: "insensitive" },
+        email: { contains: email as string, mode: "insensitive" },
+        address: { contains: address as string, mode: "insensitive" },
         role: role ? (role as string) : undefined,
       },
       select: {
@@ -66,11 +64,10 @@ export const getUsers = async (req: Request, res: Response) => {
 
     res.json(users);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching users' });
+    res.status(500).json({ error: "Error fetching users" });
   }
 };
 
-// Get User Details (with Rating if owner)
 export const getUserDetails = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -86,12 +83,12 @@ export const getUserDetails = async (req: Request, res: Response) => {
       },
     });
 
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!user) return res.status(404).json({ error: "User not found" });
 
     const ratingAvg =
-      user.role === 'owner' && user.Store
+      user.role === "owner" && user.Store
         ? user.Store.ratings.reduce((acc, r) => acc + r.rating, 0) /
-          user.Store.ratings.length || 0
+            user.Store.ratings.length || 0
         : null;
 
     res.json({
@@ -103,20 +100,19 @@ export const getUserDetails = async (req: Request, res: Response) => {
       rating: ratingAvg,
     });
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching user details' });
+    res.status(500).json({ error: "Error fetching user details" });
   }
 };
 
-// Get List of Stores with Optional Filters
 export const getStores = async (req: Request, res: Response) => {
   const { name, email, address } = req.query;
 
   try {
     const stores = await prisma.store.findMany({
       where: {
-        name: { contains: name as string, mode: 'insensitive' },
-        email: { contains: email as string, mode: 'insensitive' },
-        address: { contains: address as string, mode: 'insensitive' },
+        name: { contains: name as string, mode: "insensitive" },
+        email: { contains: email as string, mode: "insensitive" },
+        address: { contains: address as string, mode: "insensitive" },
       },
       include: {
         ratings: true,
@@ -139,6 +135,6 @@ export const getStores = async (req: Request, res: Response) => {
 
     res.json(storeList);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching stores' });
+    res.status(500).json({ error: "Error fetching stores" });
   }
 };

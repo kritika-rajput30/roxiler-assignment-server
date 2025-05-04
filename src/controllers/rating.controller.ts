@@ -1,7 +1,6 @@
-import { Request, Response } from 'express';
-import prisma from '../prisma/client';
+import { Request, Response } from "express";
+import prisma from "../prisma/client";
 
-// Add a rating to a store
 export const addRating = async (req: Request, res: Response) => {
   const { storeId, rating, comment, userId } = req.body;
 
@@ -10,7 +9,9 @@ export const addRating = async (req: Request, res: Response) => {
   }
 
   try {
-    const store = await prisma.store.findUnique({ where: { store_id: storeId } });
+    const store = await prisma.store.findUnique({
+      where: { store_id: storeId },
+    });
     if (!store) return res.status(404).json({ error: "Store not found" });
 
     const newRating = await prisma.rating.create({
@@ -29,8 +30,6 @@ export const addRating = async (req: Request, res: Response) => {
   }
 };
 
-
-// Get all ratings (with optional filters)
 export const getAllRatings = async (req: Request, res: Response) => {
   const { storeId, userId } = req.query;
 
@@ -48,12 +47,10 @@ export const getAllRatings = async (req: Request, res: Response) => {
 
     res.json(ratings);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch ratings' });
+    res.status(500).json({ error: "Failed to fetch ratings" });
   }
 };
 
-
-// Get average rating for a store
 export const getStoreRatingStats = async (req: Request, res: Response) => {
   const { storeId } = req.params;
 
@@ -63,7 +60,7 @@ export const getStoreRatingStats = async (req: Request, res: Response) => {
     });
 
     if (ratings.length === 0) {
-      return res.status(404).json({ message: 'No ratings for this store' });
+      return res.status(404).json({ message: "No ratings for this store" });
     }
 
     const average =
@@ -75,31 +72,28 @@ export const getStoreRatingStats = async (req: Request, res: Response) => {
       totalRatings: ratings.length,
     });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch rating stats' });
+    res.status(500).json({ error: "Failed to fetch rating stats" });
   }
 };
-// Update a rating by its ID
-// Update a rating by its ID
 export const updateRating = async (req: Request, res: Response) => {
   const { rating, comment } = req.body;
   const { id } = req.params;
 
-  // Validate the rating range (1 to 5)
   if (rating < 1 || rating > 5) {
     return res.status(400).json({ error: "Rating must be between 1 and 5" });
   }
 
   try {
-    // Find the existing rating by rating_id (which is a string)
-    const existingRating = await prisma.rating.findUnique({ where: { rating_id: id } });
+    const existingRating = await prisma.rating.findUnique({
+      where: { rating_id: id },
+    });
 
     if (!existingRating) {
       return res.status(404).json({ error: "Rating not found" });
     }
 
-    // Update the rating and comment
     const updatedRating = await prisma.rating.update({
-      where: { rating_id: id },  // Use rating_id as the key
+      where: { rating_id: id },
       data: {
         rating,
         comment,
