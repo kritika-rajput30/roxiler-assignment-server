@@ -1,34 +1,61 @@
-# Ratehub - Server
 
-This is the **backend** of the Ratehub application built using **Express.js**, **Node.js**, and **PostgreSQL** with **Prisma ORM**.
+---
 
-## 🔧 Technologies Used
+### ✅ `server/README.md`
+
+```markdown
+# ⚙️ Ratehub - Server
+
+This is the **backend** of the Ratehub application, built using **Express.js**, **Node.js**, and **PostgreSQL**, with **Prisma ORM** for DB modeling.
+
+## 🌐 Live Demo
+
+[🔗 Demo Video](https://www.loom.com/share/fb6385215f694fb383be8483e262a9b8?sid=e3748cd1-82a0-4a19-a1f1-384ce498bbc1)
+
+---
+
+## 🧰 Tech Stack
 
 - Node.js
 - Express.js
 - PostgreSQL
 - Prisma ORM
-- CORS
 - dotenv
+- CORS
 
+---
 
 ## 🚀 Getting Started
 
-### 1. Install Dependencies
+### 📁 Clone the Repository
 
 ```bash
-cd server
+git clone https://github.com/yourusername/Ratehub.git
+cd Ratehub/server
+```
+### Install Dependencies
+```bash
 npm install
-
 ```
 
-### 2. Initialize Prisma
+Setup Environment Variables
+Create a .env file in the root of the server folder with:
+
+```env
+
+DATABASE_URL="postgresql"
+JWT_SECRET="your_key"
+```
+
+### Prisma Setup
+Run migrations and generate Prisma client:
+
 ```bash
 npx prisma migrate dev --name init
 npx prisma generate
-
 ```
-### 3. Run the server
+
+### Run the Server
 ```bash
 npm run dev
 ```
