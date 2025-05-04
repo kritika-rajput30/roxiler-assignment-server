@@ -160,7 +160,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/harsh/Work/roxiller-assignment/server/src/generated/prisma",
+      "value": "D:\\Roxiler-assignment\\roxiler-assignment-server\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -169,12 +169,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "windows",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/harsh/Work/roxiller-assignment/server/src/prisma/schema.prisma",
+    "sourceFilePath": "D:\\Roxiler-assignment\\roxiler-assignment-server\\src\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -188,11 +188,12 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://neondb_owner:npg_fYIztr9kw2oZ@ep-blue-violet-a4lu7nyk-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require"
+        "value": null
       }
     }
   },
